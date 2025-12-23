@@ -22,26 +22,23 @@
   <div class="mb-3">
     <label for="NameField" class="form-label">Name</label>
     <input type="text" class="form-control" id="NameField" name="name"/>
+    <p class="text-danger"><%=Errors.name%></p>
   </div>
 
   <div class="mb-3">
     <label for="EmailField" class="form-label">Email</label>
-    <input type="Email" class="form-control" id="EmailField" name="email">
+    <input type="text" class="form-control" id="EmailField" name="email">
+    <p class="text-danger"><%=Errors.email%></p>
   </div>
 
   <div class="mb-3">
     <label for="PhoneField" class="form-label">Phone</label>
     <input type="text" class="form-control" id="PhoneField" name="phone">
+    <p class="text-danger"><%=Errors.phone%></p>
 </div>
 
 <input type="hidden" class="form-control" id="_Id" name="_id">
-
-
-
-  
-      <button type="submit" class="btn btn-primary" id="Submit" style="display: block">Submit</button>
-
-
+      <button type="submit" class="btn btn-primary" id="Submit">Submit</button>
 </form>
 
 

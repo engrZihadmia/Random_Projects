@@ -4,13 +4,51 @@ let Alldata=()=>{
     return Contact.find()
 }
 
+let errorHangle=(data)=>{
+  
+
+   let Errors={name:"",email:"",phone:""}
+
+if(!data.name){
+    Errors.name="Name is Required"
+}else if(typeof data.name !== 'string'){
+        Errors.name="Name Must be a String"
+}else{
+    Errors.name=""
+}
+
+
+
+if(!data.email){
+    Errors.email="Email is Required"
+}else if(!data.email.split('').includes("@")){
+    Errors.email='Email Must Contain @ '
+}else{
+    Errors.email=''
+}
+
+
+if(!data.phone){
+    Errors.phone="Phone is Required"
+}
+
+return Errors
+
+
+
+}
+
+
+
+
+
 module.exports.getContactControllers=async(req, res)=>{
 
     try{
         let AllContact= await Alldata()
-
+        
         console.log(AllContact)
-   res.render('index', {Contacts:AllContact}) 
+   res.render('index', {Contacts:AllContact,Errors:{name:"",email:"",phone:""}}) 
 
     }
 
@@ -19,26 +57,41 @@ module.exports.getContactControllers=async(req, res)=>{
     }   
 
 
-
-    
-
 }
 
 
 module.exports.addContactController=async(req,res)=>{
 
     const {name,email,phone}=req.body;
-    let id=req.body.id
+    let id=req.body._id
+let Errors=errorHangle(req.body)
+let isError=Object.values(Errors).some(msg => msg !== "");
 
+if(isError){
+
+    try{
+            
+           let AllContact= await Alldata()
+           return res.render('index', {Contacts:AllContact, Errors})
+        
+    }   
+
+      catch(err){
+      
+ res.json(err)
+    }
+
+
+}else{
      if(id){
 
         
     try{
             let updateContact= await Contact.findByIdAndUpdate(id,{name, email,phone}, {new: true} )
-             console.log(AllContact)
-            res.render('index', {Contact:AllContact})
+           let AllContact= await Alldata()
+            res.render('index', {Contacts:AllContact, Errors})
           console.log("Contact is Updated", updateContact)
-    }
+    }   
 
       catch(err){
       
@@ -57,7 +110,7 @@ module.exports.addContactController=async(req,res)=>{
         await newContact.save()
    let AllContact= await Alldata()
         console.log("New user Created Successfully", newContact)
-        res.render('index', {Contacts:AllContact}) 
+        res.render('index', {Contacts:AllContact, Errors}) 
     }
 
     catch(err){
@@ -66,6 +119,12 @@ module.exports.addContactController=async(req,res)=>{
         res.json(err)
     }
     }
+}
+
+
+
+
+
 
    
  
@@ -83,7 +142,7 @@ try{
       let AllContact= await Alldata()
 
         console.log(AllContact)
-   res.render('index', {Contacts:AllContact}) 
+   res.render('index', {Contacts:AllContact, Errors:{name:"",email:"",phone:""}}) 
 
    
 
@@ -96,24 +155,4 @@ try{
 
 }
 
-module.exports.updateContactController=async(req,res)=>{
 
-let _id= req.params.id
-    let {name,email,phone}= req.body
-
-    try{
-            let updateContact= await Contact.findByIdAndUpdate(_id,{name, email,phone}, {new: true} )
-            res.josn({
-                "Message" :updateContact
-            })
-
-          console.log("Contact is Updated", updateContact)
-    }
-
-      catch(err){
-      
- res.json(err)
-    }
-
-
-}
